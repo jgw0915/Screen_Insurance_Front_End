@@ -1,19 +1,32 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { PhoneCard } from '../Components/PhoneCard';
+import { PhoneCardColumn } from '../Components/PhoneCardColumn';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
 import { handleImageUpload } from './Register';
 
 const { width } = Dimensions.get('window');
 type prop = NativeStackScreenProps<rootStackParams, 'DashBoard'>;
 
-const DashBoardScreen : React.FC<prop> = ({route} : prop) => {
+const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
   const [loadedUserData, setLoadedUserData] = useState(route.params.userData);
+  const [selectedCategory, setSelectedCategory] = useState<'Overview' | 'IPhone' | 'Android'>('Overview');
+
+  const renderPhoneCards = () => {
+    return loadedUserData.insured_phone === null ? null : loadedUserData.insured_phone
+      .filter(phone => selectedCategory === 'Overview' || phone.phone_type === selectedCategory)
+      .map((phone) => (
+        <PhoneCard
+            phone_data={phone}
+            onPress={() => navigation.navigate('InsuranceDetail', { phone_data: phone })}
+          />
+      ));
+  };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
         <TouchableOpacity onPress={()=> handleImageUpload(loadedUserData,setLoadedUserData)}>
@@ -27,49 +40,61 @@ const DashBoardScreen : React.FC<prop> = ({route} : prop) => {
       </View>
 
       <Text style={styles.greeting}>Hello, {loadedUserData.username} 👋</Text>
-
-      <LinearGradient
-        colors={['#6DC0D5', '#6A6FDC']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.insuranceCard}
-      >
-        <Text style={styles.insuranceText}>Insurance Reviewing...</Text>
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar} />
-        </View>
-        <Text style={styles.insuranceProgress}>3 / 4</Text>
-      </LinearGradient>
-
+      <TouchableOpacity>
+        <LinearGradient
+          colors={['#6DC0D5', '#6A6FDC']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.insuranceCard}
+        >
+          <Text style={styles.insuranceText}>Insurance Reviewing...</Text>
+          <View style={styles.progressContainer}>
+            <View style={styles.progressBar} />
+          </View>
+          <Text style={styles.insuranceProgress}>3 / 4</Text>
+        </LinearGradient>
+      </TouchableOpacity>
       <View style={styles.categoryButtons}>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryButtonText}>Overview</Text>
+        <TouchableOpacity
+          style={
+            selectedCategory === 'Overview'
+            ? styles.selectedCategoryButton
+            :styles.unSelectedCategoryButton
+          }
+          onPress={()=>setSelectedCategory('Overview')}
+          >
+          <Text style={styles.categoryButtonText} >Overview</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
+        <TouchableOpacity
+          style={
+            selectedCategory === 'IPhone'
+            ? styles.selectedCategoryButton
+            :styles.unSelectedCategoryButton
+          }
+          onPress={()=>setSelectedCategory('IPhone')}
+          >
           <Text style={styles.categoryButtonText}>Apple</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={
+            selectedCategory === 'Android'
+            ? styles.selectedCategoryButton
+            :styles.unSelectedCategoryButton
+          }
+          onPress={()=>setSelectedCategory('Android')}
+          >
+          <Text style={styles.categoryButtonText}>Android</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.phoneCard}>
-        <Image source={
-            require('@assets/Icons/Apple.png') }
-            style={styles.phoneIcon} 
-        />
-        <Text style={styles.phoneText}>iPhone 15 Pro</Text>
-      </View>
-      <View style={styles.phoneCardExpired}>
-        <Image source={
-            require('@assets/Icons/Apple.png') }
-            style={styles.phoneIcon} 
-        />
-        <Text style={styles.phoneText}>iPhone 11</Text>
-        <Text style={styles.expiredLabel}>Expired</Text>
-      </View>
+      <PhoneCardColumn>
+        { renderPhoneCards() }
+      </PhoneCardColumn>
 
       <TouchableOpacity style={styles.addButton}>
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -136,53 +161,23 @@ const styles = StyleSheet.create({
   },
   categoryButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
     marginBottom: 20,
   },
-  categoryButton: {
+  selectedCategoryButton: {
+    backgroundColor: '#2A9DF4',
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  unSelectedCategoryButton: {
     backgroundColor: '#222',
     padding: 10,
     borderRadius: 10,
+    marginRight: 10,
   },
   categoryButtonText: {
     color: '#fff',
     fontSize: 16,
-  },
-  phoneCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#222',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  phoneCardExpired: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#222',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 10,
-    position: 'relative',
-  },
-  phoneIcon: {
-    width: 40,
-    height: 40,
-    marginRight: 20,
-  },
-  phoneText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  expiredLabel: {
-    color: '#c15146',
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 100 ,
   },
   addButton: {
     backgroundColor: '#2A9DF4',
@@ -191,7 +186,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 180,
+    marginTop: 10,
     marginBottom: 20,
     left: width/2-40,
   },

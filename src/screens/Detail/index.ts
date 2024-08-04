@@ -1,0 +1,1 @@
+export { InsuranceDetailScreen } from "./InsuranceDetail";

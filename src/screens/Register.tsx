@@ -20,6 +20,7 @@ import { initUserData } from '../data/data';
 const { height, width } = Dimensions.get('window');
 type props = NativeStackScreenProps<rootStackParams, 'Register'>;
 
+
 export const handleImageUpload = async (userData: any, setUserData:any) => {
   Alert.alert(
     'Upload Image',
