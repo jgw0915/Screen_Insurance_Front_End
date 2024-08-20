@@ -2,7 +2,9 @@ export type userData ={
     username: string,
     password: string,
     phoneNumber: string,
-    profileImage: string | null,
+    profileImage: string | undefined,
+    current_phone_type: "IPhone" | "Android",
+    current_phone_name: string,
     insured_phone: insured_phone[] | null,
 }
 
@@ -12,7 +14,7 @@ interface insured_phone{
     expired: boolean,
     expired_date?: string,
     valid_date?: string,
-    insurance_id?: string,
+    insurance_id: string,
 }
 
 export { insured_phone }
@@ -123,12 +125,16 @@ export const initUserData : userData = {
     username: "",
     password: "",
     phoneNumber: "",
-    profileImage: null ,
+    current_phone_name: "IPhone 15 pro",
+    current_phone_type: "IPhone",
+    profileImage: undefined ,
     insured_phone: initFakePhoneData,
 }
 
 export const fakeUserData : userData = {
     username: "Programmer",
+    current_phone_name: "Galaxy s21",
+    current_phone_type: "Android",
     password: "1234",
     phoneNumber: "1234",
     profileImage: "https://i.pinimg.com/474x/ad/a3/85/ada38506e144d7940c4a5fea1358cbfa.jpg",

@@ -1,3 +1,4 @@
+import { CommonActions } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import {
@@ -13,6 +14,7 @@ import {
   View
 } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { ImageButton } from '../Components';
 import { RegisterTextInput } from '../Components/RegisterTextInput';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
 import { initUserData } from '../data/data';
@@ -80,23 +82,18 @@ const RegisterScreen = ( { navigation } : props ) => {
   
 
   return (
-    <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView behavior="padding" >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView behavior="padding" style={styles.container} >
         <Image
-            source={require('@assets/register-background.png')}
+            source={require('@Assets/register-background.png')}
             style={styles.image}
         />
         <Text style={styles.header}>Register</Text>
-        <TouchableOpacity onPress={() => handleImageUpload(userData, setUserData)} style={styles.profile_image_button}>
-          <Image
-            source={
-              userData.profileImage
-                ? { uri: userData.profileImage }
-                : require('@assets/profile-placeholder.png')
-            }
-            style={styles.profileImage}
-          />
-        </TouchableOpacity>
+        <ImageButton
+          image_uri={userData.profileImage}
+          style={styles.profileImage}
+          onPress={() => handleImageUpload(userData, setUserData)}
+        />
         <Text style={styles.profileText}>Your Profile</Text>
         <Text style={styles.subText}>
           Tap the avatar to upload your avatar
@@ -127,10 +124,15 @@ const RegisterScreen = ( { navigation } : props ) => {
           returnKeyType="go"
         />
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.skipButton} onPress={()=> navigation.navigate("SignIn")}>
+          <TouchableOpacity style={styles.skipButton} onPress={()=> navigation.replace("SignIn")}>
             <Text style={styles.buttonText}>Skip</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=> navigation.navigate("DashBoard",{userData})} style={styles.doneButton}>
+          <TouchableOpacity onPress={()=> navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'DashBoard',  params: {userData: userData}} ],  // Replace 'Home' with the screen you want to navigate to
+              }))}
+              style={styles.doneButton}>
             <Text style={styles.buttonText}>Done</Text>
           </TouchableOpacity>
         </View>
@@ -141,13 +143,11 @@ const RegisterScreen = ( { navigation } : props ) => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 50,
+    backgroundColor: '#000000',
   },
   image: {
     width: width,
     height: height,
-    alignSelf: 'flex-start',
-    
   },
   header: {
     fontSize: 40,
@@ -168,10 +168,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     top: height / 100-700,
     alignContent: 'center',
     justifyContent: 'center',

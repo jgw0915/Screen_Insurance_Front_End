@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { rootStackParams } from '../../Navigator/stack/StackNavigator';
@@ -6,44 +6,45 @@ import { rootStackParams } from '../../Navigator/stack/StackNavigator';
 type props = NativeStackScreenProps<rootStackParams, 'InsuranceDetail'>;
 
 const InsuranceDetailScreen = ( { navigation, route } : props) => {
-  
-  
-  const handleRenewInsurance = () => {
-    // Logic to renew insurance
-  };
+    const [loadedUserData, setLoadedUserData] = useState(route.params.userData);
+    const [ phoneData, setPhoneData ] = useState(route.params.phone_data);
+    
+    const handleRenewInsurance = () => {
+        navigation.navigate('NewInsurance', { phoneName: phoneData.phone_name,phoneType:phoneData.phone_type,phoneNumber:loadedUserData.phoneNumber,userData: loadedUserData });
+    };
 
-  return (
-    <View style={styles.container}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-        <Text style={styles.sub_phoneName}>{route.params.phone_data.phone_name}</Text>
-        <Image
-        source={
-            route.params.phone_data.phone_type === "IPhone" ?
-            require('@assets/Icons/Apple.png')
-            : require('@assets/Icons/Android.png')
-        } 
-        style={styles.profileImage} 
-        />
-        <Text style={styles.phoneName}>{route.params.phone_data.phone_name}</Text>
-        <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Insurance No</Text>
-            <Text style={styles.insurance_NO_text}>#{route.params.phone_data.insurance_id}</Text>
+    return (
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+            <Text style={styles.sub_phoneName}>{phoneData.phone_name}</Text>
+            <Image
+            source={
+                phoneData.phone_type === "IPhone" ?
+                require('@Assets/Icons/Apple.png')
+                : require('@Assets/Icons/Android.png')
+            } 
+            style={styles.profileImage} 
+            />
+            <Text style={styles.phoneName}>{phoneData.phone_name}</Text>
+            <View style={styles.infoContainer}>
+                <Text style={styles.infoTitle}>Insurance No</Text>
+                <Text style={styles.insurance_NO_text}>#{phoneData.insurance_id}</Text>
+            </View>
+            <View style={styles.infoContainer}>
+                <Text style={styles.infoTitle}>Valid From</Text>
+                <Text style={styles.valid_date_text}>{phoneData.valid_date}</Text>
+            </View>
+            <View style={styles.infoContainer}>
+                <Text style={styles.infoTitle}>Expired At</Text>
+                <Text style={styles.expired_date_text}>{phoneData.expired_date}</Text>
+            </View>
+            <TouchableOpacity style={styles.renewButton} onPress={handleRenewInsurance}>
+                <Text style={styles.renewButtonText}>Renew Insurance</Text>
+            </TouchableOpacity>
         </View>
-        <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Valid From</Text>
-            <Text style={styles.valid_date_text}>{route.params.phone_data.valid_date}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-            <Text style={styles.infoTitle}>Expired At</Text>
-            <Text style={styles.expired_date_text}>{route.params.phone_data.expired_date}</Text>
-        </View>
-        <TouchableOpacity style={styles.renewButton} onPress={handleRenewInsurance}>
-            <Text style={styles.renewButtonText}>Renew Insurance</Text>
-        </TouchableOpacity>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({

@@ -5,12 +5,11 @@ import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/nati
 import { PhoneCard } from '../Components/PhoneCard';
 import { PhoneCardColumn } from '../Components/PhoneCardColumn';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
-import { handleImageUpload } from './Register';
 
 const { width } = Dimensions.get('window');
-type prop = NativeStackScreenProps<rootStackParams, 'DashBoard'>;
+type props = NativeStackScreenProps<rootStackParams, 'DashBoard'>;
 
-const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
+const DashBoardScreen : React.FC<props> = ({navigation,route} : props) => {
   const [loadedUserData, setLoadedUserData] = useState(route.params.userData);
   const [selectedCategory, setSelectedCategory] = useState<'Overview' | 'IPhone' | 'Android'>('Overview');
 
@@ -19,17 +18,18 @@ const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
       .filter(phone => selectedCategory === 'Overview' || phone.phone_type === selectedCategory)
       .map((phone) => (
         <PhoneCard
+            key={phone.insurance_id}
             phone_data={phone}
-            onPress={() => navigation.navigate('InsuranceDetail', { phone_data: phone })}
+            onPress={() => navigation.navigate('InsuranceDetail', { phone_data: phone , userData: loadedUserData})}
           />
       ));
   };
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
-        <TouchableOpacity onPress={()=> handleImageUpload(loadedUserData,setLoadedUserData)}>
+        <TouchableOpacity onPress={()=> navigation.navigate('UserProfile',{ userData: route.params.userData })}>
           <Image source={
               loadedUserData.profileImage ?
               { uri: loadedUserData.profileImage }
@@ -40,7 +40,7 @@ const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
       </View>
 
       <Text style={styles.greeting}>Hello, {loadedUserData.username} 👋</Text>
-      <TouchableOpacity>
+      <View>
         <LinearGradient
           colors={['#6DC0D5', '#6A6FDC']}
           start={{ x: 0, y: 0 }}
@@ -53,7 +53,7 @@ const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
           </View>
           <Text style={styles.insuranceProgress}>3 / 4</Text>
         </LinearGradient>
-      </TouchableOpacity>
+      </View>
       <View style={styles.categoryButtons}>
         <TouchableOpacity
           style={
@@ -91,7 +91,7 @@ const DashBoardScreen : React.FC<prop> = ({navigation,route} : prop) => {
         { renderPhoneCards() }
       </PhoneCardColumn>
 
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity style={styles.addButton} onPress={()=>navigation.navigate("NewInsurance",{phoneName:loadedUserData.current_phone_name,phoneType: loadedUserData.current_phone_type,phoneNumber:loadedUserData.phoneNumber,userData:loadedUserData})}>
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
     </View>
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 32,
   },
 });
 

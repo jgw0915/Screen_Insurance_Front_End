@@ -12,7 +12,7 @@ const HomeScreen = ( {navigation} :prop ) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/onboarding.png')}
+        source={require('@Assets/onboarding.png')}
         style={styles.image}
       />
       <View style={styles.textContainer}>
@@ -34,8 +34,7 @@ const HomeScreen = ( {navigation} :prop ) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: width,
-    height: height,
+    backgroundColor: '#000000',
   },
   image: {
     width: width,

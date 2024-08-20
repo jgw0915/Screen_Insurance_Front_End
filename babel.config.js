@@ -8,10 +8,10 @@ module.exports = function (api) {
         'module-resolver',
         {
           alias: {
-            '@components': './src/components',
-            '@screens': './src/screens',
-            '@assets': './assets',
-            '@data': './src/data',
+            '@Components': './src/components',
+            '@Screens': './src/screens',
+            '@Assets': './assets',
+            '@Data': './src/data',
             '@Navigator': './src/Navigator',
           }
         }

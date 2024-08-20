@@ -1,3 +1,4 @@
+import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
@@ -6,7 +7,7 @@ import { fakeUserData } from '../data/data';
 
 type props = NativeStackScreenProps<rootStackParams, 'SignIn'>;
 
-const SignInScreen = ({ navigation } : {navigation:any} ) => {
+const SignInScreen : React.FC<props> = ({ navigation } : props ) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [userData] = useState(fakeUserData);
@@ -15,7 +16,11 @@ const SignInScreen = ({ navigation } : {navigation:any} ) => {
     // Replace this with your backend API call for authentication
     const isAuthenticated = await fakeAuthenticate(phoneNumber, password);
     if (isAuthenticated) {
-      navigation.navigate('DashBoard',{userData}); // Replace 'NextPage' with your actual next screen
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'DashBoard',  params: {userData: userData}} ],  // Replace 'Home' with the screen you want to navigate to
+        })); // Replace 'NextPage' with your actual next screen
     } else {
       Alert.alert('Authentication Failed', 'Invalid phone number or password');
     }
