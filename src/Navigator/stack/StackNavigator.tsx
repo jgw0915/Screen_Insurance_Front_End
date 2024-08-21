@@ -2,7 +2,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { insured_phone, userData } from '../../data/data';
-import { CameraInstructionScreen } from '../../Screens/CameraInstruction';
 import { DashBoardScreen } from '../../Screens/DashBoard';
 import { InsuranceDetailScreen } from '../../Screens/Detail';
 import { EditProfileScreen } from '../../Screens/EditProfile';
@@ -10,6 +9,7 @@ import { HomeScreen } from '../../Screens/Home';
 import { NewInsuranceScreen } from '../../Screens/NewInsurance';
 import { RegisterScreen } from '../../Screens/Register';
 import { ScreenBrokenDetectScreen } from '../../Screens/ScreenBrokenDetect';
+import { ScreenBrokenDetectResultScreen } from '../../Screens/ScreenBrokenDetectResult';
 import { SignInScreen } from '../../Screens/SignIn';
 import { UserProfileScreen } from '../../Screens/UserProfile';
 
@@ -19,7 +19,7 @@ export type rootStackParams = {
     SignIn: undefined,
     DashBoard: {
       userData : userData;
-    }
+    },
     InsuranceDetail : {
       userData : userData;
       phone_data : insured_phone;
@@ -29,25 +29,26 @@ export type rootStackParams = {
     },
     EditProfile : {
       userData : userData;
-    }
+    },
     NewInsurance: {
       phoneNumber : string;
       phoneType : "IPhone" | "Android";
       phoneName : string;
       userData : userData;
     },
-    CameraInstruction: {
+    ScreenBrokenDetect: {
       phoneNumber : string;
       phoneType : "IPhone" | "Android";
       phoneName : string;
       userData : userData;
-    }
-    ScreenBrokenDetect : {
+    },
+    ScreenBrokenDetectResult : {
       phoneNumber : string;
       phoneType : "IPhone" | "Android";
       phoneName : string;
       userData : userData;
-    }
+      takenPhoto : string | undefined;
+    },
 };
     
 const Stack = createStackNavigator<rootStackParams>();
@@ -69,8 +70,8 @@ const LoginStackNavigator = () => {
         <Stack.Screen name="UserProfile" component={UserProfileScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name="NewInsurance" component={NewInsuranceScreen} />
-        <Stack.Screen name="CameraInstruction" component={CameraInstructionScreen} />
         <Stack.Screen name="ScreenBrokenDetect" component={ScreenBrokenDetectScreen} />
+        <Stack.Screen name="ScreenBrokenDetectResult" component={ScreenBrokenDetectResultScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

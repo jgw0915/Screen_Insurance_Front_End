@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { Loader } from '../Components';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
@@ -119,12 +120,12 @@ const NewInsuranceScreen = ({navigation,  route }:props) => {
             <Text style={styles.phoneName}>{phoneName}</Text>
             <Text style={styles.phoneNumber}>{phoneNumber}</Text>
         </View>
-        <View style={styles.hardwareChecks}>
+        <ScrollView style={styles.hardwareChecks}>
             <HardwareCheckItem label="Internet Access" />
             <HardwareCheckItem label="Microphone" />
             <HardwareCheckItem label="Face ID" />
             <HardwareCheckItem label="Camera Access" />
-        </View>
+        </ScrollView>
         <TouchableOpacity
             style={
                 microphoneChecked && internetAccessChecked && faceIDChecked && cameraChecked ?
@@ -133,7 +134,7 @@ const NewInsuranceScreen = ({navigation,  route }:props) => {
             }
             onPress={
                 microphoneChecked && internetAccessChecked && faceIDChecked && cameraChecked ?
-                () => navigation.navigate("CameraInstruction", {phoneName, phoneNumber, phoneType, userData}):
+                () => navigation.navigate("ScreenBrokenDetect", {phoneName, phoneNumber, phoneType, userData}):
                 () => {}
             }
             disabled={microphoneChecked && internetAccessChecked && faceIDChecked && cameraChecked ? false : true}
