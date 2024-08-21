@@ -16,7 +16,7 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
 
     const onTimeOut = async() => {
         const pic = await _takePicture();
-        console.log("pic = ",pic);
+        // console.log("pic = ",pic);
         navigation.replace("ScreenBrokenDetectResult", {
             userData: route.params.userData,
             phoneName: route.params.phoneName,
@@ -30,7 +30,7 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
 
 
     const _takePicture = async () => {
-        console.log("camera.current = ",camera.current);
+        // console.log("camera.current = ",camera.current);
         if (camera.current) {
             console.log("Taking Picture");
 
