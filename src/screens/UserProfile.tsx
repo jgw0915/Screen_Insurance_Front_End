@@ -149,7 +149,8 @@ const styles = StyleSheet.create({
         padding: 15,
         width: 150,
         borderRadius: 20,
-        marginTop: 300,
+        marginTop: "auto",
+        marginBottom : 20,
         alignSelf: 'center',
     },
     logoutText: {

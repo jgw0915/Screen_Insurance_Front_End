@@ -1,4 +1,4 @@
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -108,7 +108,7 @@ const NewInsuranceScreen = ({navigation,  route }:props) => {
             onPress={() => navigation.goBack()}
             style={styles.backButton}
         >
-            <Text style={styles.backButtonText}>←</Text>
+            <Ionicons name="arrow-back" size={34} color="white" />
         </TouchableOpacity>
         <Text style={styles.title}>New Insurance</Text>
         <View style={styles.phoneInfo}>
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 30,
         alignItems: 'center',
-        marginTop: 'auto',
-        marginBottom: 30,
+        marginTop: 20,
+        marginBottom: 20,
     },
     startInsuranceButtonText: {
         fontSize: 18,
@@ -244,8 +244,8 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 30,
         alignItems: 'center',
-        marginTop: 'auto',
-        marginBottom: 30,
+        marginTop: 20,
+        marginBottom: 20,
     },
     waitForLoadingButtonText: {
         fontSize: 18,

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
@@ -45,7 +46,7 @@ const EditProfileScreen : React.FC<props> = ({navigation, route}: props) => {
 
             {/* Back Button */}
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                <Text style={styles.backButtonText}>{'<'}</Text>
+                <Ionicons name="arrow-back" size={34} color="white" />
             </TouchableOpacity>
 
             {/* Title */}
@@ -127,8 +128,8 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         borderRadius: 20,
         alignItems: 'center',
-        marginTop: 250,
-        marginBottom: 40,
+        marginTop: 'auto',
+        marginBottom: 20,
     },
     updateButtonText: {
         color: '#fff',
