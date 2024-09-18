@@ -36,6 +36,14 @@ const ScreenBrokenDetectResultScreen = ({navigation,route}:props) => {
     const handleSubmitForVerification = () => {
         Alert.alert('Verification Submitted', 'Your photo has been submitted for verification.');
         // Add your submission logic here
+        
+        // You can 
+        navigation.replace("OptionInsurance", {
+            userData: route.params.userData,
+            phoneName: route.params.phoneName,
+            phoneType: route.params.phoneType,
+            phoneNumber: route.params.phoneNumber,
+        });
     };
 
     // console.log("takenPhoto = ",route.params.takenPhoto);

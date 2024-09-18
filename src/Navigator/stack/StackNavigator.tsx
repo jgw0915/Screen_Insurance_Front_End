@@ -12,6 +12,8 @@ import { ScreenBrokenDetectScreen } from '../../Screens/ScreenBrokenDetect';
 import { ScreenBrokenDetectResultScreen } from '../../Screens/ScreenBrokenDetectResult';
 import { SignInScreen } from '../../Screens/SignIn';
 import { UserProfileScreen } from '../../Screens/UserProfile';
+import { OptionInsuranceScreen } from '../../Screens/OptionInsurance';
+import { ChosePlanScreen } from '../../Screens/ChosePlan';
 
 export type rootStackParams = {
     Home: undefined,
@@ -49,6 +51,18 @@ export type rootStackParams = {
       userData : userData;
       takenPhoto : string | undefined;
     },
+    OptionInsurance : {
+      phoneNumber : string;
+      phoneType : "IPhone" | "Android";
+      phoneName : string;
+      userData : userData;
+    },
+    ChosePlan : {
+      phoneNumber : string;
+      phoneType : "IPhone" | "Android";
+      phoneName : string;
+      userData : userData;
+    },
 };
     
 const Stack = createStackNavigator<rootStackParams>();
@@ -72,6 +86,8 @@ const LoginStackNavigator = () => {
         <Stack.Screen name="NewInsurance" component={NewInsuranceScreen} />
         <Stack.Screen name="ScreenBrokenDetect" component={ScreenBrokenDetectScreen} />
         <Stack.Screen name="ScreenBrokenDetectResult" component={ScreenBrokenDetectResultScreen} />
+        <Stack.Screen name="OptionInsurance" component={OptionInsuranceScreen} />
+        <Stack.Screen name="ChosePlan" component={ChosePlanScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
