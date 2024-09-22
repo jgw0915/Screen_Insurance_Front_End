@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native';
 import React, { useState } from 'react';
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
 
@@ -26,7 +26,7 @@ const OptionInsuranceScreen = ({navigation,route}:props) => {
     };
 
     const next = () => {
-        navigation.replace("ChosePlan", {
+        navigation.navigate("ChosePlan", {
             userData: route.params.userData,
             phoneName: route.params.phoneName,
             phoneType: route.params.phoneType,

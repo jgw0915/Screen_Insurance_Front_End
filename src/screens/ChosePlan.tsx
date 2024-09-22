@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, Alert, Modal, Button  } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import React, { useState } from 'react';
+import { ImageBackground, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
 
@@ -109,7 +110,12 @@ const ChosePlanScreen = ({navigation,route}:props) => {
                     style={styles.modalButton}
                     onPress={() => {
                         setModalVisible(!modalVisible);
-                        navigation.replace("Home"); 
+                        navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'DashBoard',params: {userData: route.params.userData} }],  // Replace 'Home' with the screen you want to navigate to
+                            })
+                        ); 
                     }}
                 >
                     <Text style={styles.modalButtonText}>I will waiting for the approval</Text>
@@ -269,3 +275,4 @@ const styles = StyleSheet.create({
 
 
 export { ChosePlanScreen };
+
