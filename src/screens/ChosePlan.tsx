@@ -115,7 +115,7 @@ const ChosePlanScreen = ({navigation,route}:props) => {
                                 index: 0,
                                 routes: [{ name: 'DashBoard',params: {userData: route.params.userData} }],  // Replace 'Home' with the screen you want to navigate to
                             })
-                        ); 
+                        );
                     }}
                 >
                     <Text style={styles.modalButtonText}>I will waiting for the approval</Text>

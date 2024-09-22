@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { CommonActions } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
@@ -53,14 +54,18 @@ const UserProfileScreen : React.FC<props> = ({ navigation , route } : props) => 
             <Text style={styles.editProfileText}>Edit Profile</Text>
         </TouchableOpacity>
 
+        <Text style={{ color: '#898989', fontSize: 16, marginTop: 20 , marginLeft: 5}}>Notifications</Text>
+
         {/* Do Not Disturb Toggle */}
         <View style={styles.notificationContainer}>
+            <Ionicons name="notifications-off-outline" size={34} color="#b971fd" />
             <Text style={styles.notificationText}>Do not disturb</Text>
             <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={isDoNotDisturb ? '#f5dd4b' : '#f4f3f4'}
+            trackColor={{ false: '#767577', true: '#6ee864' }}
+            thumbColor={isDoNotDisturb ? '#f4f3f4' : '#f4f3f4'}
             onValueChange={handleToggleSwitch}
             value={isDoNotDisturb}
+            style={{ marginLeft: 'auto' }}
             />
         </View>
 
@@ -83,17 +88,20 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     cancelButton: {
+        top: 10,
+        left: 10,
         marginLeft: 10,
         marginTop: 50,
-        backgroundColor: '#1A73E8',
+        backgroundColor: '#3579ef',
         position: 'absolute',
-        width: 30,
-        height: 30,
-        borderRadius: 40,
+        width: 35,
+        height: 35,
+        borderRadius: 35,
     },
     cancelText: {
-        padding: 5,
-        fontSize: 18,
+        padding: 6,
+        fontWeight: 'bold',
+        fontSize: 22,
         alignContent: 'center',
         justifyContent: 'center',
         color: 'white',
@@ -110,44 +118,53 @@ const styles = StyleSheet.create({
         borderRadius: 120,
     },
     userName: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
         color: 'white',
         marginTop: 10,
     },
     userPhone: {
         fontSize: 16,
-        color: '#A0A0A0',
+        color: '#6ee864',
         marginTop: 5,
     },
     editProfileButton: {
-        backgroundColor: '#1A73E8',
+        width: 120,
+        borderColor: '#1A73E8',
+        borderBlockColor: '#1A73E8',
+        borderWidth: 1,
+        backgroundColor: '#302e38',
         padding: 10,
         borderRadius: 20,
         marginTop: 20,
         alignSelf: 'center',
     },
     editProfileText: {
+        textAlign: 'center',
+        justifyContent: 'center',
         color: 'white',
-        fontSize: 16,
+        fontSize: 18,
     },
     notificationContainer: {
         backgroundColor: '#262626',
         padding: 15,
-        borderRadius: 10,
+        height: 80,
+        borderRadius: 20,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        marginTop: 30,
+        marginTop: 10,
     },
     notificationText: {
+        marginLeft: 10,
         color: 'white',
-        fontSize: 16,
+        fontSize: 20,
     },
     logoutButton: {
         backgroundColor: '#FF6E67',
-        padding: 15,
-        width: 150,
+        padding: 10,
+        width: 240,
+        height: 50,
         borderRadius: 20,
         marginTop: "auto",
         marginBottom : 20,
@@ -158,7 +175,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
         color: 'white',
-        fontSize: 16,
+        fontSize: 22,
     },
     });
 
