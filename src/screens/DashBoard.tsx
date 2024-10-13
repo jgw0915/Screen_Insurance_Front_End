@@ -33,7 +33,7 @@ const DashBoardScreen : React.FC<props> = ({navigation,route} : props) => {
           <Image source={
               loadedUserData.profileImage ?
               { uri: loadedUserData.profileImage }
-              : require('@Assets/profile-placeholder.png') }
+              : require('@Assets/Images/profile-placeholder.png') }
               style={styles.avatar}
           />
         </TouchableOpacity>
