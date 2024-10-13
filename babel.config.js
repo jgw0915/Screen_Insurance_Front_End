@@ -4,6 +4,7 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      ['react-native-worklets-core/plugin'],
       [
         'module-resolver',
         {
@@ -13,9 +14,9 @@ module.exports = function (api) {
             '@Assets': './assets',
             '@Data': './src/data',
             '@Navigator': './src/Navigator',
-          }
-        }
-      ]
-    ]
+          },
+        },
+      ],
+    ],
   };
 };
