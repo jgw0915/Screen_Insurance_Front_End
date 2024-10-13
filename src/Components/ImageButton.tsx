@@ -34,7 +34,7 @@ const ImageButton : React.FC<ImageButtonProps> = ({
                 source={
                     image_uri?
                     { uri: image_uri }
-                    : require('@Assets/profile-placeholder.png')
+                    : require('@Assets/Images/profile-placeholder.png')
                 }
                 style={styles.profileImage}
             />

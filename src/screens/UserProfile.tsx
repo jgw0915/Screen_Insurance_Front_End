@@ -27,7 +27,7 @@ const UserProfileScreen : React.FC<props> = ({ navigation , route } : props) => 
                 source={
                 route.params.userData.profileImage ?
                 { uri: route.params.userData.profileImage }
-                : require('@Assets/profile-placeholder.png') } // Replace with the actual image URI
+                : require('@Assets/Images/profile-placeholder.png') } // Replace with the actual image URI
                 style={styles.profileImage}
             />
             <Text style={styles.userName}>

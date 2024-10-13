@@ -1,12 +1,10 @@
-const {getDefaultConfig} = require('expo/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config');
 
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
-config.resolver = {
-    ...config.resolver,
-    assetExts: [...config.resolver.assetExts, 'db', 'ttf', 'png', 'jpg', 'jpeg', 'gif', 'webp','tflite'],
-    sourceExts: [...config.resolver.sourceExts, 'svg', 'd.ts'],
-};
+config.resolver.assetExts.push('tflite')
+config.resolver.assetExts.push('json')
+config.resolver.assetExts.push('txt')
 
 module.exports = config;
