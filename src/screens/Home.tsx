@@ -11,7 +11,7 @@ const HomeScreen = ( {navigation} :prop ) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@Assets/onboarding.png')}
+        source={require('@Assets/Images/onboarding.png')}
         style={styles.image}
       />
       <View style={styles.textContainer}>
