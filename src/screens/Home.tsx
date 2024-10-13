@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';

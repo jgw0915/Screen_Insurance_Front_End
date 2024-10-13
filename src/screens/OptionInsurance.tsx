@@ -20,8 +20,8 @@ const OptionInsuranceScreen = ({navigation,route}:props) => {
 
     const handleSwitchChange = (item: string) => {
         setSwitchStates((prevStates) => ({
-          ...prevStates,
-          [item]: !prevStates[item],
+            ...prevStates,
+            [item]: !prevStates[item],
         }));
     };
 

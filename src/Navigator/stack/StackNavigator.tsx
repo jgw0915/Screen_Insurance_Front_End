@@ -1,19 +1,19 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { insured_phone, userData } from '../../data/data';
+import { insured_phone, userData } from '../../data/Type/data_type';
+import { ChosePlanScreen } from '../../Screens/ChosePlan';
 import { DashBoardScreen } from '../../Screens/DashBoard';
 import { InsuranceDetailScreen } from '../../Screens/Detail';
 import { EditProfileScreen } from '../../Screens/EditProfile';
 import { HomeScreen } from '../../Screens/Home';
 import { NewInsuranceScreen } from '../../Screens/NewInsurance';
+import { OptionInsuranceScreen } from '../../Screens/OptionInsurance';
 import { RegisterScreen } from '../../Screens/Register';
 import { ScreenBrokenDetectScreen } from '../../Screens/ScreenBrokenDetect';
 import { ScreenBrokenDetectResultScreen } from '../../Screens/ScreenBrokenDetectResult';
 import { SignInScreen } from '../../Screens/SignIn';
 import { UserProfileScreen } from '../../Screens/UserProfile';
-import { OptionInsuranceScreen } from '../../Screens/OptionInsurance';
-import { ChosePlanScreen } from '../../Screens/ChosePlan';
 
 export type rootStackParams = {
     Home: undefined,
@@ -94,3 +94,4 @@ const LoginStackNavigator = () => {
 };
 
 export { LoginStackNavigator };
+

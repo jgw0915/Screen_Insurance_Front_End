@@ -17,7 +17,7 @@ import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/nati
 import { ImageButton } from '../Components';
 import { RegisterTextInput } from '../Components/RegisterTextInput';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
-import { initUserData } from '../data/data';
+import { initUserData } from '../data/Mock/user_data';
 
 const { height, width } = Dimensions.get('window');
 type props = NativeStackScreenProps<rootStackParams, 'Register'>;
@@ -85,7 +85,7 @@ const RegisterScreen = ( { navigation } : props ) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView behavior="padding" style={styles.container} >
         <Image
-            source={require('@Assets/register-background.png')}
+            source={require('@Assets/Images/register-background.png')}
             style={styles.image}
         />
         <Text style={styles.header}>Register</Text>

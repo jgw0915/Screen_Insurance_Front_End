@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { insured_phone } from '../data/data';
+import { insured_phone } from '../data/Type/data_type';
 
 type PhoneCardProps = {
     style?: object;
@@ -18,8 +18,8 @@ export const PhoneCard:React.FC<PhoneCardProps> = ({
         <TouchableOpacity style={styles.phoneCard} onPress={()=> onPress(phone_data)}>
             <Image source={
                 phone_data.phone_type === "IPhone" ?
-                require('@assets/Icons/Apple.png')
-                : require('@assets/Icons/Android.png')
+                require('@Assets/Icons/Apple.png')
+                : require('@Assets/Icons/Android.png')
             }
                 style={styles.phoneIcon}
             />

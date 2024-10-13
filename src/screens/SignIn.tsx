@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Alert, Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
-import { fakeUserData } from '../data/data';
+import { fakeUserData } from '../data/Mock/user_data';
 
 type props = NativeStackScreenProps<rootStackParams, 'SignIn'>;
 
