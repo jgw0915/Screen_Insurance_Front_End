@@ -17,10 +17,8 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
     const { hasPermission, requestPermission } = useCameraPermission()
     const device = useCameraDevice('front')!;
 
-    const classIndices = getClassIndices(CLASSES);
-    console.log(`CLASSES array:`, CLASSES);
     
-    const objectDetection = useTensorflowModel(require('@Assets/Models/ssd-mobilenet-v1-tflite-default-v1.tflite'))
+    const objectDetection = useTensorflowModel(require('@Assets/Models/object_detect.tflite'))
     const model = objectDetection.state === "loaded" ? objectDetection.model : undefined
 
     const { resize } = useResizePlugin()
@@ -54,51 +52,33 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
         for (let i = 0; i < detection_boxes.length; i += 4) {
             const confidence = detection_scores[i / 4]
             const detected_class_index = detection_classes[i / 4]
-            console.log(`Detected object with confidence ${confidence}`)
-            console.log(`Detected class index: ${detected_class_index}`);
-            
-            if (!classIndices.includes(Number(detected_class_index)) && CLASSES[Number(detected_class_index)]) {
-                const detect_object = CLASSES[Number(detected_class_index)].displayName;
-                console.log(`Detected object with confidence ${confidence}`);
-                console.log(`Class: ${detect_object}`);
-                if (confidence > 0.7) {
-                    // 4. Draw a red box around the detected object!
-                    const left = detection_boxes[i];
-                    const top = detection_boxes[i + 1];
-                    const right = detection_boxes[i + 2];
-                    const bottom = detection_boxes[i + 3];
-                    // const rect = SkRect.Make(left, top, right, bottom)
-                    // canvas.drawRect(rect, SkColors.Red)
-                    if (detect_object === 'cell phone') {
-                        useEffect(() => {
-                            if (timeLeft <= 0) {
-                                onTimeOut();
-                                return;
-                            }
-                            
-                            const timerId = setInterval(() => {
-                                setTimeLeft((prevTime:any) => prevTime - 1);
-                            }, 1000);
+            if (confidence > 0.7) {
+                console.log(`Detected object with confidence ${confidence}`)
+                console.log(`Class: ${detected_class_index}`)
+                // 4. Draw a red box around the detected object!
+                const left = detection_boxes[i]
+                const top = detection_boxes[i + 1]
+                const right = detection_boxes[i + 2]
+                const bottom = detection_boxes[i + 3]
+                // const rect = SkRect.Make(left, top, right, bottom)
+                // canvas.drawRect(rect, SkColors.Red)
+                if (CLASSES[Number(detected_class_index)].displayName === 'cell phone') {
+                    useEffect(() => {
+                        if (timeLeft <= 0) {
+                            onTimeOut();
+                            return;
+                        }
                         
-                            return () => clearInterval(timerId); // Cleanup on unmount or when timeLeft changes
-                            }, [timeLeft, onTimeOut]);
-                    }
+                        const timerId = setInterval(() => {
+                            setTimeLeft((prevTime:any) => prevTime - 1);
+                        }, 1000);
+                    
+                        return () => clearInterval(timerId); // Cleanup on unmount or when timeLeft changes
+                        }, [timeLeft, onTimeOut]);
                 }
-            } else {
-                console.error(`No class found for index ${detected_class_index}`);
             }
         }
     }, [model])
-
-    function getClassIndices(classes:any) {
-        const indices = [];
-        for (let i = 0; i < classes.length; i++) {
-            if (classes[i].id !== undefined) {
-                indices.push(classes[i].id);
-            }
-        }
-        return indices;
-    }
 
     const onTimeOut = async() => {
         const pic = await _takePicture();
