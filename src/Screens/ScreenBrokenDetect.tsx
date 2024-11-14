@@ -12,18 +12,34 @@ import { CLASSES } from '../data/classes';
 type props = NativeStackScreenProps<rootStackParams, 'ScreenBrokenDetect'>;
 
 const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
-    const [timeLeft, setTimeLeft] = useState(6);
+    const [timeLeft, setTimeLeft] = useState(10);
     // const [facing, setFacing] = useState<CameraType>('front');
     const { hasPermission, requestPermission } = useCameraPermission()
     const device = useCameraDevice('front')!;
+    const [isTimerActive, setIsTimerActive] = useState(true);
 
     const classIndices = getClassIndices(CLASSES);
-    console.log(`CLASSES array:`, CLASSES);
+    // console.log(`CLASSES array:`, CLASSES);
     
     const objectDetection = useTensorflowModel(require('@Assets/Models/ssd-mobilenet-v1-tflite-default-v1.tflite'))
     const model = objectDetection.state === "loaded" ? objectDetection.model : undefined
 
     const { resize } = useResizePlugin()
+
+    useEffect(() => {
+        if (!isTimerActive) return; // Do nothing if the timer is not active
+
+        if (timeLeft <= 0) {
+            onTimeOut();
+            setIsTimerActive(false); // Stop the timer after timeout
+            return;
+        }
+
+        console.log(`Time left: ${timeLeft}`);
+
+        const timerId = setInterval(() => setTimeLeft((prevTime) => prevTime - 1), 1000);
+        return () => clearInterval(timerId); // Cleanup
+    }, [timeLeft, isTimerActive]);
 
     const frameProcessor = useFrameProcessor((frame:any) => {
         'worklet'
@@ -49,18 +65,18 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
         const detection_classes = outputs[1]
         const detection_scores = outputs[2]
         const num_detections = outputs[3]
-        console.log(`Detected ${num_detections[0]} objects!`)
+        // console.log(`Detected ${num_detections[0]} objects!`)
 
         for (let i = 0; i < detection_boxes.length; i += 4) {
             const confidence = detection_scores[i / 4]
             const detected_class_index = detection_classes[i / 4]
-            console.log(`Detected object with confidence ${confidence}`)
-            console.log(`Detected class index: ${detected_class_index}`);
+            // console.log(`Detected object with confidence ${confidence}`)
+            // console.log(`Detected class index: ${detected_class_index}`);
             
             if (!classIndices.includes(Number(detected_class_index)) && CLASSES[Number(detected_class_index)]) {
                 const detect_object = CLASSES[Number(detected_class_index)].displayName;
-                console.log(`Detected object with confidence ${confidence}`);
-                console.log(`Class: ${detect_object}`);
+                // console.log(`Detected object with confidence ${confidence}`);
+                // console.log(`Class: ${detect_object}`);
                 if (confidence > 0.7) {
                     // 4. Draw a red box around the detected object!
                     const left = detection_boxes[i];
@@ -70,22 +86,11 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
                     // const rect = SkRect.Make(left, top, right, bottom)
                     // canvas.drawRect(rect, SkColors.Red)
                     if (detect_object === 'cell phone') {
-                        useEffect(() => {
-                            if (timeLeft <= 0) {
-                                onTimeOut();
-                                return;
-                            }
-                            
-                            const timerId = setInterval(() => {
-                                setTimeLeft((prevTime:any) => prevTime - 1);
-                            }, 1000);
-                        
-                            return () => clearInterval(timerId); // Cleanup on unmount or when timeLeft changes
-                            }, [timeLeft, onTimeOut]);
+                        setIsTimerActive(true);
                     }
                 }
             } else {
-                console.error(`No class found for index ${detected_class_index}`);
+                // console.error(`No class found for index ${detected_class_index}`);
             }
         }
     }, [model])
@@ -115,42 +120,68 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
 
 
     const _takePicture = async () => {
-        // console.log("camera.current = ",camera.current);
         if (camera.current) {
             console.log("Taking Picture");
-
-        // Take the picture
-        // const options = { quality: 1, base64: true, skipProcessing: false };
-        let photo = await camera.current.takePhoto();
-
-        // Determine the crop area dimensions
-        // These values should be calculated based on the rectangle area on the screen
-        const cropWidth = photo!.width * 0.65; // The width of the rectangle
-        const cropHeight = photo!.height * 0.65; // The height of the rectangle
-        const originX = photo!.width * 0.18; // Starting X position
-        const originY = photo!.height * 0.15; // Starting Y position
-
-        // Crop the image using ImageManipulator
-        const croppedImage = await ImageManipulator.manipulateAsync(
-            photo.path!,
-            [
-                {
-                    crop: {
-                        originX: originX,
-                        originY: originY,
-                        width: cropWidth,
-                        height: cropHeight,
-                    },
-                },
-            ],
-            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
-        );
-
-        const source = croppedImage.uri;
-        return source; // Return the cropped photo URI
-    }
+    
+            // Take the picture
+            let photo = await camera.current.takePhoto();
+    
+            // Log the photo dimensions
+            console.log(`Photo dimensions: width=${photo.width}, height=${photo.height}`);
+    
+            // Ensure photo properties are valid
+            const photoWidth = photo.width;
+            const photoHeight = photo.height;
+    
+            // Calculate the crop dimensions
+            let cropWidth = Math.floor(photoWidth * 0.65); // Adjust as per your rectangle
+            let cropHeight = Math.floor(photoHeight * 0.65);
+            let originX = Math.floor(photoWidth * 0.18);
+            let originY = Math.floor(photoHeight * 0.15);
+    
+            // Ensure crop dimensions stay within bounds (strict checks)
+            if (originX + cropWidth > photoWidth) {
+                cropWidth = photoWidth - originX - 1; // Reduce by 1 pixel to ensure validity
+            }
+            if (originY + cropHeight > photoHeight) {
+                cropHeight = photoHeight - originY - 1; // Reduce by 1 pixel to ensure validity
+            }
+    
+            // Log final crop parameters
+            console.log(`Final Crop dimensions: originX=${originX}, originY=${originY}, cropWidth=${cropWidth}, cropHeight=${cropHeight}`);
+            console.log(`Validation: originX + cropWidth=${originX + cropWidth}, photoWidth=${photoWidth}`);
+            console.log(`Validation: originY + cropHeight=${originY + cropHeight}, photoHeight=${photoHeight}`);
+    
+            // Perform the crop using ImageManipulator
+            try {
+                const croppedImage = await ImageManipulator.manipulateAsync(
+                    photo.path!,
+                    [
+                        {
+                            crop: {
+                                originX: originX,
+                                originY: originY,
+                                width: cropWidth,
+                                height: cropHeight,
+                            },
+                        },
+                    ],
+                    { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+                );
+    
+                const source = croppedImage.uri;
+                console.log("Cropped Image URI:", source);
+                return source; // Return the cropped photo URI
+            } catch (error) {
+                console.error("Error during image manipulation:", error);
+                throw error; // Re-throw the error to handle it higher up
+            }
+        } else {
+            console.error("Camera is not initialized.");
+        }
     };
-
+    
+    
 
     if (!hasPermission) {
         Alert.alert('Camera permission required', 'Please allow camera permission to proceed.');
