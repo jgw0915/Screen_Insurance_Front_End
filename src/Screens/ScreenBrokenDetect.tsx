@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/nati
 import { Camera, useCameraDevice, useCameraPermission, useFrameProcessor } from 'react-native-vision-camera';
 import { useResizePlugin } from 'vision-camera-resize-plugin';
 import { rootStackParams } from '../Navigator/stack/StackNavigator';
+import { useFocusEffect } from '@react-navigation/native';
 // import { CLASSES } from '../data/classes';
 
 type props = NativeStackScreenProps<rootStackParams, 'ScreenBrokenDetect'>;
@@ -17,6 +18,7 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
     const { hasPermission, requestPermission } = useCameraPermission()
     const device = useCameraDevice('front')!;
     const [isTimerActive, setIsTimerActive] = useState(false);
+    const [modelstate, setModelState] = useState("Not loeaded");
 
     const CLASSES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 
         'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 
@@ -29,9 +31,9 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
         'hair drier', 'toothbrush'];
 
     // const classIndices = getClassIndices(CLASSES);
-    // console.log(`CLASSES array:`, CLASSES);
+    console.log(`CLASSES length:`, CLASSES.length);
     
-    const objectDetection = useTensorflowModel(require('@Assets/Models/ssd-mobilenet-v1-tflite-default-v1.tflite'))
+    const objectDetection = useTensorflowModel(require('@Assets/Models/yolov5s-int8.tflite'))
     const model = objectDetection.state === "loaded" ? objectDetection.model : undefined
 
     const { resize } = useResizePlugin()
@@ -51,59 +53,81 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
         return () => clearInterval(timerId); // Cleanup
     }, [timeLeft, isTimerActive]);
 
-    const frameProcessor = useFrameProcessor((frame:any) => {
-        'worklet'
-        if (model == null) {
-            return
-        }
-        // const canvas = new SkCanvas(frame);
-        // 1. Resize 4k Frame to 320x320x3 using vision-camera-resize-plugin
+    const frameProcessor = useFrameProcessor((frame: any) => {
+        'worklet';
+
         const resized = resize(frame, {
-            scale: {
-            width: 320,
-            height: 320,
-            },
             pixelFormat: 'rgb',
-            dataType: 'uint8',
-        })
-
-        // 2. Run model with given input buffer synchronously
-        const outputs = model.runSync([resized])
-
-        // 3. Interpret outputs accordingly
-        const detection_boxes = outputs[0]
-        const detection_classes = outputs[1]
-        const detection_scores = outputs[2]
-        const num_detections = outputs[3]
-        // console.log(`Detected ${num_detections[0]} objects!`)
-
-        for (let i = 0; i < detection_boxes.length; i += 4) {
-            const confidence = detection_scores[i / 4]
-            const detected_class_index = detection_classes[i / 4]
-            console.log(`Detected object with confidence ${confidence}`)
-            console.log(`Detected class index: ${detected_class_index}`);
-            
-            if (detected_class_index < CLASSES.length) {
-                const detect_object = CLASSES[Number(detected_class_index)];
-                console.log(`Detected object with confidence ${confidence}`);
-                console.log(`Class: ${detect_object}`);
-                if (confidence > 0.7) {
-                    // 4. Draw a red box around the detected object!
-                    const left = detection_boxes[i];
-                    const top = detection_boxes[i + 1];
-                    const right = detection_boxes[i + 2];
-                    const bottom = detection_boxes[i + 3];
-                    // const rect = SkRect.Make(left, top, right, bottom)
-                    // canvas.drawRect(rect, SkColors.Red)
-                    if (detect_object === 'cell phone') {
-                        setIsTimerActive(true);
-                    }
-                }
-            } else {
-                // console.error(`No class found for index ${detected_class_index}`);
-            }
+            scale: { width: 640, height: 640 },
+            dataType: 'uint8', // Ensures we get Uint8Array output
+        });
+    
+        if (!resized) {
+            console.error('Failed to resize frame.');
+            return;
         }
+
+        // // Add batch dimension to match the expected input shape [1, 640, 640, 3]
+        // const inputData = new Float32Array(1 * 640 * 640 * 3); // Create a new Float32Array
+        // inputData.set(resized); // Copy resized data into the new array
+
+        // console.log('Input shape:', inputData.length, 'Expected:', 640 * 640 * 3);
+        // console.log("Resized[1]",inputData[1220000]);
+
+        try{
+            console.log('Model Running');
+            const outputs = model?.runSync([resized]);
+            console.log('Model run successfully');
+
+            if (!outputs) {
+                console.error('Model outputs are invalid or incomplete.');
+                return;
+            }
+        
+            // 3. Interpret outputs accordingly
+            const detection_boxes = outputs[0]
+            const detection_classes = outputs[1]
+            const detection_scores = outputs[2]
+            const num_detections = outputs[3]
+            // console.log(Detected ${num_detections[0]} objects!)
+    
+            for (let i = 0; i < detection_boxes.length; i += 4) {
+                const confidence = detection_scores[i / 4]
+                const detected_class_index = detection_classes[i / 4]
+                console.log("Detected object with confidence ${confidence}");
+                console.log("Detected class index: ${detected_class_index}");
+                
+                if (detected_class_index < CLASSES.length) {
+                    const detect_object = CLASSES[Number(detected_class_index)];
+                    console.log("Detected object with confidence ${confidence}");
+                    console.log("Class: ${detect_object}");
+                    if (confidence > 0.7) {
+                        // 4. Draw a red box around the detected object!
+                        const left = detection_boxes[i];
+                        const top = detection_boxes[i + 1];
+                        const right = detection_boxes[i + 2];
+                        const bottom = detection_boxes[i + 3];
+                        // const rect = SkRect.Make(left, top, right, bottom)
+                        // canvas.drawRect(rect, SkColors.Red)
+                        if (detect_object === 'cell phone') {
+                            setIsTimerActive(true);
+                        }
+                    }
+                } else {
+                    console.error("No class found for index ${detected_class_index}");
+                }
+            }
+        }catch (error){
+            console.error("fail runnig the model,Cause by:",error)
+        }
+
+
+    
+        
     }, [model])
+
+
+    
 
     function getClassIndices(classes:any) {
         const indices = [];
@@ -116,7 +140,7 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
     }
 
     const onTimeOut = async() => {
-        // const pic = await _takePicture();
+        const pic = await _takePicture();
         navigation.replace("ScreenBrokenDetectResult", {
             userData: route.params.userData,
             phoneName: route.params.phoneName,
@@ -124,6 +148,16 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
             phoneNumber: route.params.phoneNumber,
             takenPhoto: "https://png.pngtree.com/png-clipart/20230303/original/pngtree-broken-phone-screen-design-png-image_8971601.png",
         });
+        // const dummyInput = new Uint8Array(1228800).fill(1); // A test tensor with all values set to 0.5
+        // try {
+        //     setModelState('model running')
+        //     console.log('model running')
+        //     const outputs = model?.runSync([dummyInput]);
+        //     console.log('model run successfully')
+        //     console.log('Dummy Input Model Outputs first 10:', outputs?.slice(10));
+        // } catch (error) {
+        //     console.error('Error during model execution with dummy input:', error);
+        // }
     }
 
     let camera = useRef<Camera>(null);
@@ -238,6 +272,7 @@ const ScreenBrokenDetectScreen = ({navigation, route}:props) => {
                 </Text>
             </View>
         </Camera>
+        // <Text>{'\n'}{'\n'}{modelstate}</Text>
     );
 };
 
