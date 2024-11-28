@@ -1,6 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import { ScrollView } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { Loader } from '../Components';
@@ -24,6 +25,13 @@ const NewInsuranceScreen = ({navigation,  route }:props) => {
     const [microphoneChecked, setMicrophoneChecked] = useState(false);
     const [faceIDChecked, setFaceIDChecked] = useState(false);
     const [cameraChecked, setCameraChecked] = useState(false);
+    const IMEI = require('react-native-imei');
+    IMEI.getImei().then((imeiList: string[]) => {
+        console.log("IMEI: "+imeiList); // prints ["AABBBBBBCCCCCCD"]
+    });
+    DeviceInfo.getDeviceToken().then((deviceToken) => {
+        console.log("Device Check Token: "+deviceToken)
+    });
 
     const CountdownTimer = ({ initialTime, onTimeOut }: { initialTime: number; onTimeOut: () => void }) => {
         const [timeLeft, setTimeLeft] = useState(initialTime);
