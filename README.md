@@ -87,7 +87,13 @@ Common issues and their solutions:
   ```
   sdk.dir=/path/to/your/Android/sdk
   ```
-
+- For Building Error in Android:
+  ```
+  Could not determine the dependencies of task ':react-native-imei:bundleLibCompileToJarDebug'.
+  > Could not create task ':react-native-imei:compileDebugJavaWithJavac'.
+     > In order to compile Java 9+ source, please set compileSdkVersion to 30 or above
+  ```
+  Modify the sdk version in ./node_modules/react-native-imei/adnroid/gradle.build to above 30.
 ## Minimum Requirements
 
 - Android SDK: API 24 (Android 7.0)
