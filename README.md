@@ -33,7 +33,7 @@ Before running this project, make sure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone [repository-url]
+   git clone https://github.com/jgw0915/Screen_Insurance_Front_End.git
    ```
 
 2. Install dependencies:
