@@ -47,16 +47,16 @@ Before running this project, make sure you have the following installed:
 
 1. Start Metro Bundler:
    ```bash
-   npm start
+   npx expo start
    # or
-   yarn start
+   yarn expo start
    ```
 
 2. Run on Android:
    ```bash
-   npm run android
+   npm expo run:android
    # or
-   yarn android
+   yarn expo run:android
    ```
 
 ### Running on a Device
